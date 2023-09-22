@@ -1,8 +1,9 @@
 // Componentes react native
-import { ActivityIndicator } from 'react-native'
+import { StatusBar } from 'react-native'; 
 
 // Componentes personalizados
 import { Groups } from '@screens/Groups';
+import { Loading } from '@components/Loading';
 
 // Themes
 import { ThemeProvider } from 'styled-components'
@@ -18,7 +19,13 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      {fontsLoaded ? <Groups /> : <ActivityIndicator />}
+      <StatusBar 
+        barStyle={'light-content'}
+        backgroundColor='transparent'
+        translucent={true}
+      />
+      
+      {fontsLoaded ? <Groups /> : <Loading />}
     </ThemeProvider>
   )
 }
