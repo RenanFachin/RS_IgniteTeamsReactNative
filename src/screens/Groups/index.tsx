@@ -6,10 +6,11 @@ import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
 import { GroupCard } from '@components/GroupCard'
 import { ListEmpty } from '@components/ListEmpty'
+import { Button } from '@components/Button'
+
 
 export function Groups() {
-  //'Turma da Rocketseat', 'Turma do Ignite', 'Turma da PUC'
-  const [groups, setGroups] = useState<string[]>([])
+  const [groups, setGroups] = useState<string[]>(['Turma da Rocketseat', 'Turma do Ignite', 'Turma da PUC'])
 
   return (
     <Container>
@@ -18,18 +19,27 @@ export function Groups() {
       <Highlight title='Turmas' subtitle='Jogue com a sua turma' />
 
       <FlatList
-        data={groups} // data = dados que vão ser carregados pela flatlist
-        keyExtractor={item => item} // valor único para ser utilizado dentro da listagem
+        // data = dados que vão ser carregados pela flatlist
+        data={groups}
+        // valor único para ser utilizado dentro da listagem
+        keyExtractor={item => item}
+        // renderItem vai ser responsável por renderizar um elemento
         renderItem={({ item }) => (
           <GroupCard
             title={item}
           />
-        )} // renderItem vai ser responsável por renderizar um elemento
+        )}
+        // contentContainerStyle = Aplica estilos ao container que envolve o contéudo da lista
         contentContainerStyle={groups.length === 0 && { flex: 1 }}
+        // ListEmptyComponent = Vai renderizar quando não tiver nada
         ListEmptyComponent={() => <ListEmpty message='Que tal cadastrar a primeira turma?' />}
-      // ListEmptyComponent = Vai renderizar quando não tiver nada
       />
 
+
+      <Button 
+        title='Criar nova turma'
+        buttonType='PRIMARY'
+      />
 
 
     </Container>
