@@ -1,8 +1,8 @@
 // Componentes react native
-import { StatusBar } from 'react-native'; 
+import { StatusBar } from 'react-native';
 
 // Componentes personalizados
-import { Groups } from '@screens/Groups';
+import { NewGroup } from '@screens/NewGroup';
 import { Loading } from '@components/Loading';
 
 // Themes
@@ -19,13 +19,13 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <StatusBar 
+      <StatusBar
         barStyle={'light-content'}
         backgroundColor='transparent'
         translucent={true}
       />
-      
-      {fontsLoaded ? <Groups /> : <Loading />}
+
+      {fontsLoaded ? <NewGroup /> : <Loading />}
     </ThemeProvider>
   )
 }
