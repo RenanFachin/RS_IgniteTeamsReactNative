@@ -1,11 +1,17 @@
+import { useState } from 'react'
+import { Container, Form, HeaderList, PlayersCount } from './styles'
+import { FlatList } from 'react-native'
+
 import { Header } from '@components/Header'
-import { Container, Form } from './styles'
 import { Highlight } from '@components/Highlight'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { Input } from '@components/Input'
 import { Filter } from '@components/Filter'
 
 export function Players() {
+  const [players, setPlayers] = useState<string[]>([])
+  const [team, setTeam] = useState('Time A')
+
   return (
     <Container>
       <Header showBackButton={true} />
@@ -26,8 +32,25 @@ export function Players() {
         <ButtonIcon iconName='add' />
       </Form>
 
-      <Filter title='Time A' isActive/>
-      <Filter title='Time B' />
+      <HeaderList>
+        <FlatList
+          data={['Time A', 'Time B']}
+          keyExtractor={item => item}
+          renderItem={({ item }) => (
+            <Filter
+              title={item}
+              isActive={item === team}
+              onPress={() => setTeam(item)}
+            />
+          )}
+          horizontal={true} // Alterando a direção da flatList
+        />
+
+        <PlayersCount>
+          {players.length}
+        </PlayersCount>
+      </HeaderList>
+
 
     </Container>
   )
