@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Container } from './styles'
 import { FlatList } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
@@ -11,11 +11,12 @@ import { Button } from '@components/Button'
 
 
 export function Groups() {
+  const navigation = useNavigation()
+
   const [groups, setGroups] = useState<string[]>(['Turma da Rocketseat', 'Turma do Ignite', 'Turma da PUC'])
 
-  const navigation = useNavigation()
-  function handleNewGroup(){
-    navigation.navigate('players', {group: 'Turma do Ignite'})
+  function handleNewGroup() {
+    navigation.navigate('new')
   }
 
   return (
@@ -41,7 +42,7 @@ export function Groups() {
         ListEmptyComponent={() => <ListEmpty message='Que tal cadastrar a primeira turma?' />}
       />
 
-      <Button 
+      <Button
         title='Criar nova turma'
         buttonType='PRIMARY'
         onPress={handleNewGroup}
