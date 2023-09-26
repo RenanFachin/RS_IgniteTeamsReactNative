@@ -8,7 +8,7 @@ const NativeStack = createNativeStackNavigator()
 
 export function AppRoutes() {
   return (
-    <NativeStack.Navigator>
+    <NativeStack.Navigator initialRouteName='groups' screenOptions={{ headerShown: false }}>
       <NativeStack.Screen
         name='groups'
         component={Groups}
