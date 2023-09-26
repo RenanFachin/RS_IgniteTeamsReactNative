@@ -2,11 +2,11 @@
 import { StatusBar } from 'react-native';
 
 // Componentes personalizados
-import { Players } from '@screens/Players';
+import { NewGroup } from '@screens/NewGroup';
 import { Loading } from '@components/Loading';
 
 // Themes
-import { ThemeProvider } from 'styled-components'
+import { ThemeProvider } from 'styled-components/native'
 import theme from '@theme/index';
 
 // Fontes
@@ -25,7 +25,7 @@ export default function App() {
         translucent={true}
       />
 
-      {fontsLoaded ? <Players /> : <Loading />}
+      {fontsLoaded ? <NewGroup /> : <Loading />}
     </ThemeProvider>
   )
 }
