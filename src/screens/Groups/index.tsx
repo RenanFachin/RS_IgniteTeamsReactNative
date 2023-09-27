@@ -35,7 +35,7 @@ export function Groups() {
   // https://reactnavigation.org/docs/use-focus-effect/
   useFocusEffect(
     useCallback(() => {
-      console.log("use Focus Effect executou")
+      // console.log("use Focus Effect executou")
       fetchGroups()
     }, []))
 
