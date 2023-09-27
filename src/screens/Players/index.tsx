@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Alert, FlatList } from 'react-native'
+import { useState, useEffect, useRef } from 'react'
+import { Alert, FlatList, TextInput } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import { Container, Form, HeaderList, PlayersCount } from './styles'
 
@@ -32,6 +32,7 @@ export function Players() {
   const route = useRoute()
   const { group } = route.params as RouteParams
 
+  const newPLayerNameInputRef = useRef<TextInput>(null)
 
   async function handleAddPlayer() {
     if (newPlayerName.trim().length === 0) {
@@ -47,6 +48,9 @@ export function Players() {
       // Mandando o novo jogador (Que é um objeto criado a partir dos dados dos states) e o group que vem pela rota
       await AddPlayerByGroup(newPlayer, group)
 
+      newPLayerNameInputRef.current?.blur() // tirando o focus do input após adicionar
+
+      setNewPlayerName('') // retornando o valor para o inicial
 
       fetchPlayersByTeam()
 
@@ -90,9 +94,13 @@ export function Players() {
 
       <Form>
         <Input
+          inputRef={newPLayerNameInputRef}
           onChangeText={setNewPlayerName}
+          value={newPlayerName}
           placeholder='Nome da pessoa'
           autoCorrect={false}
+          onSubmitEditing={handleAddPlayer}
+          returnKeyType='done'
         />
 
 
