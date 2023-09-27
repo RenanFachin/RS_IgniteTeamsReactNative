@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Alert, FlatList, TextInput } from 'react-native'
-import { useRoute } from '@react-navigation/native'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import { Container, Form, HeaderList, PlayersCount } from './styles'
 
 import { Input } from '@components/Input'
@@ -14,10 +14,10 @@ import { PlayerCard } from '@components/PlayerCard'
 
 import { AppError } from '@utils/AppError'
 import { AddPlayerByGroup } from '@storage/player/AddPlayerByGroup'
-import { getPlayerByGroup } from '@storage/player/getPlayerByGroup'
 import { getPlayerByGroupAndTeam } from '@storage/player/GetPlayerByGroupAndTeam'
 import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
 import { removePlayerByGroup } from '@storage/player/removePlayerByGroup'
+import { groupRemoveByName } from '@storage/group/removeGroupByName'
 
 type RouteParams = {
   group: string
@@ -66,17 +66,45 @@ export function Players() {
     }
   }
 
-  async function handleRemovePlayer(playerName: string){
+  async function handleRemovePlayer(playerName: string) {
     try {
       await removePlayerByGroup(playerName, group)
-      
+
       fetchPlayersByTeam()
 
     } catch (error) {
       console.log(error)
-    
+
       Alert.alert("Remover pessoa", "Não foi possível remover a pessoa selecionada.")
     }
+  }
+
+  const navigation = useNavigation()
+  async function groupRemove() {
+    try {
+      // deletando o grupo
+      await groupRemoveByName(group)
+    
+      // redirecionando o usuário
+      navigation.navigate('groups')
+
+    } catch (error) {
+      console.log(error)
+
+      Alert.alert("Remover grupo", "Não foi possível remover o grupo.")
+    }
+  }
+
+  async function handleRemoveGroup() {
+    Alert.alert(
+      'Remover', // Título
+      'Deseja remover o grupo?', // Mensagem
+      [
+        // Opções
+        { text: 'Não', style: 'cancel' },
+        { text: 'Sim', onPress: () => groupRemove }
+      ]
+    )
   }
 
   async function fetchPlayersByTeam() {
@@ -168,6 +196,7 @@ export function Players() {
       <Button
         title='Remover Turma'
         buttonType='SECONDARY'
+        onPress={handleRemoveGroup}
       />
 
     </Container>
