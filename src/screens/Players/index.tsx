@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Alert, FlatList } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import { Container, Form, HeaderList, PlayersCount } from './styles'
@@ -11,9 +11,12 @@ import { Highlight } from '@components/Highlight'
 import { ListEmpty } from '@components/ListEmpty'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { PlayerCard } from '@components/PlayerCard'
+
 import { AppError } from '@utils/AppError'
 import { AddPlayerByGroup } from '@storage/player/AddPlayerByGroup'
 import { getPlayerByGroup } from '@storage/player/getPlayerByGroup'
+import { getPlayerByGroupAndTeam } from '@storage/player/GetPlayerByGroupAndTeam'
+import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
 
 type RouteParams = {
   group: string
@@ -23,8 +26,8 @@ export function Players() {
 
   const [newPlayerName, setNewPlayerName] = useState('')
 
-  const [players, setPlayers] = useState<string[]>([])
-  const [team, setTeam] = useState<'Time A' | 'Time B'>('Time A')
+  const [players, setPlayers] = useState<PlayerStorageDTO[]>([])
+  const [team, setTeam] = useState('')
 
   const route = useRoute()
   const { group } = route.params as RouteParams
@@ -43,8 +46,9 @@ export function Players() {
     try {
       // Mandando o novo jogador (Que é um objeto criado a partir dos dados dos states) e o group que vem pela rota
       await AddPlayerByGroup(newPlayer, group)
-      // const players = await getPlayerByGroup(group)
-      // console.log(players)
+
+
+      fetchPlayersByTeam()
 
 
     } catch (error) {
@@ -56,6 +60,23 @@ export function Players() {
       }
     }
   }
+
+  async function fetchPlayersByTeam() {
+    try {
+      // group vem por param da interface e o team vem do state
+      const playersByTeam = await getPlayerByGroupAndTeam(group, team)
+
+      setPlayers(playersByTeam)
+
+    } catch (error) {
+      console.log(error)
+      Alert.alert("Pessoas", "Não foi possível carregar as informações.")
+    }
+  }
+
+  useEffect(() => {
+    fetchPlayersByTeam()
+  }, [team])
 
   return (
     <Container>
@@ -103,11 +124,11 @@ export function Players() {
 
       <FlatList
         data={players}
-        keyExtractor={item => item}
+        keyExtractor={item => item.name}
         renderItem={({ item }) => (
           <PlayerCard
             iconName='person'
-            playerName={item}
+            playerName={item.name}
             onRemove={() => { }}
           />
         )}
