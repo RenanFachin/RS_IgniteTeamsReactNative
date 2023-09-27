@@ -32,6 +32,10 @@ export function Groups() {
     }
   }
 
+  function handleOpenGroup(group: string) {
+    navigation.navigate('players', { group })
+  }
+
   // https://reactnavigation.org/docs/use-focus-effect/
   useFocusEffect(
     useCallback(() => {
@@ -54,6 +58,7 @@ export function Groups() {
         renderItem={({ item }) => (
           <GroupCard
             title={item}
+            onPress={() => handleOpenGroup(item)}
           />
         )}
         // contentContainerStyle = Aplica estilos ao container que envolve o contéudo da lista
