@@ -17,6 +17,7 @@ import { AddPlayerByGroup } from '@storage/player/AddPlayerByGroup'
 import { getPlayerByGroup } from '@storage/player/getPlayerByGroup'
 import { getPlayerByGroupAndTeam } from '@storage/player/GetPlayerByGroupAndTeam'
 import { PlayerStorageDTO } from '@storage/player/PlayerStorageDTO'
+import { removePlayerByGroup } from '@storage/player/removePlayerByGroup'
 
 type RouteParams = {
   group: string
@@ -62,6 +63,19 @@ export function Players() {
         console.log(error)
         Alert.alert('Nova pessoa', 'Não foi possível adicionar o jogador.')
       }
+    }
+  }
+
+  async function handleRemovePlayer(playerName: string){
+    try {
+      await removePlayerByGroup(playerName, group)
+      
+      fetchPlayersByTeam()
+
+    } catch (error) {
+      console.log(error)
+    
+      Alert.alert("Remover pessoa", "Não foi possível remover a pessoa selecionada.")
     }
   }
 
@@ -137,7 +151,7 @@ export function Players() {
           <PlayerCard
             iconName='person'
             playerName={item.name}
-            onRemove={() => { }}
+            onRemove={() => handleRemovePlayer(item.name)}
           />
         )}
         showsVerticalScrollIndicator={false}
