@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Container } from './styles'
 import { FlatList } from 'react-native'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
 import { Highlight } from '@components/Highlight';
 import { GroupCard } from '@components/GroupCard'
 import { ListEmpty } from '@components/ListEmpty'
 import { Button } from '@components/Button'
+import { getAllGroups } from '@storage/group/getAllGroups';
 
 
 export function Groups() {
@@ -18,6 +19,25 @@ export function Groups() {
   function handleNewGroup() {
     navigation.navigate('new')
   }
+
+  // Listando os grupos
+  async function fetchGroups() {
+    try {
+      const data = await getAllGroups()
+
+      // Armazenando os dados obtidos do storage no state
+      setGroups(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // https://reactnavigation.org/docs/use-focus-effect/
+  useFocusEffect(
+    useCallback(() => {
+      console.log("use Focus Effect executou")
+      fetchGroups()
+    }, []))
 
   return (
     <Container>
