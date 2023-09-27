@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FlatList } from 'react-native'
+import { Alert, FlatList } from 'react-native'
 import { useRoute } from '@react-navigation/native'
 import { Container, Form, HeaderList, PlayersCount } from './styles'
 
@@ -11,18 +11,51 @@ import { Highlight } from '@components/Highlight'
 import { ListEmpty } from '@components/ListEmpty'
 import { ButtonIcon } from '@components/ButtonIcon'
 import { PlayerCard } from '@components/PlayerCard'
+import { AppError } from '@utils/AppError'
+import { AddPlayerByGroup } from '@storage/player/AddPlayerByGroup'
+import { getPlayerByGroup } from '@storage/player/getPlayerByGroup'
 
 type RouteParams = {
   group: string
 }
 
 export function Players() {
-  // 'Renan', 'Apolo', 'Tom', 'Momoa'
+
+  const [newPlayerName, setNewPlayerName] = useState('')
+
   const [players, setPlayers] = useState<string[]>([])
-  const [team, setTeam] = useState('Time A')
+  const [team, setTeam] = useState<'Time A' | 'Time B'>('Time A')
 
   const route = useRoute()
   const { group } = route.params as RouteParams
+
+
+  async function handleAddPlayer() {
+    if (newPlayerName.trim().length === 0) {
+      return Alert.alert('Nova pessoa', 'Informe o nome da pessoa para adicionar!')
+    }
+
+    const newPlayer = {
+      name: newPlayerName,
+      team: team
+    }
+
+    try {
+      // Mandando o novo jogador (Que é um objeto criado a partir dos dados dos states) e o group que vem pela rota
+      await AddPlayerByGroup(newPlayer, group)
+      // const players = await getPlayerByGroup(group)
+      // console.log(players)
+
+
+    } catch (error) {
+      if (error instanceof AppError) {
+        Alert.alert('Nova pessoa', error.message)
+      } else {
+        console.log(error)
+        Alert.alert('Nova pessoa', 'Não foi possível adicionar o jogador.')
+      }
+    }
+  }
 
   return (
     <Container>
@@ -36,12 +69,16 @@ export function Players() {
 
       <Form>
         <Input
+          onChangeText={setNewPlayerName}
           placeholder='Nome da pessoa'
           autoCorrect={false}
         />
 
 
-        <ButtonIcon iconName='add' />
+        <ButtonIcon
+          iconName='add'
+          onPress={handleAddPlayer}
+        />
       </Form>
 
       <HeaderList>
