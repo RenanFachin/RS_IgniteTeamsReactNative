@@ -118,13 +118,13 @@ export function Players() {
       const playersByTeam = await getPlayerByGroupAndTeam(group, team)
 
       setPlayers(playersByTeam)
-
-      // Desativando o loading após o carregamento
-      setIsLoading(false)
-
+      
     } catch (error) {
       console.log(error)
       Alert.alert("Pessoas", "Não foi possível carregar as informações.")
+    } finally {
+      // Desativando o loading após o carregamento
+      setIsLoading(false)
     }
   }
 
@@ -181,7 +181,7 @@ export function Players() {
 
 
       {isLoading ?
-        <Loading></Loading>
+        <Loading />
         :
         <FlatList
           data={players}
