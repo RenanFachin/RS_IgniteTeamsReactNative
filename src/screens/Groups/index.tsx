@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { Container } from './styles'
-import { FlatList } from 'react-native'
+import { Alert, FlatList } from 'react-native'
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { Header } from '@components/Header';
@@ -28,6 +28,7 @@ export function Groups() {
       // Armazenando os dados obtidos do storage no state
       setGroups(data)
     } catch (error) {
+      Alert.alert('Turmas', 'Não foi possível carregas as turmas.')
       console.log(error)
     }
   }

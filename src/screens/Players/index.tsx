@@ -7,6 +7,7 @@ import { Input } from '@components/Input'
 import { Filter } from '@components/Filter'
 import { Header } from '@components/Header'
 import { Button } from '@components/Button'
+import { Loading } from '@components/Loading'
 import { Highlight } from '@components/Highlight'
 import { ListEmpty } from '@components/ListEmpty'
 import { ButtonIcon } from '@components/ButtonIcon'
@@ -24,6 +25,7 @@ type RouteParams = {
 }
 
 export function Players() {
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const [newPlayerName, setNewPlayerName] = useState('')
 
@@ -84,7 +86,7 @@ export function Players() {
     try {
       // deletando o grupo
       await groupRemoveByName(group)
-    
+
       // redirecionando o usuário
       navigation.navigate('groups')
 
@@ -109,10 +111,16 @@ export function Players() {
 
   async function fetchPlayersByTeam() {
     try {
+      // Ativando o loading até que o carregamento seja feito
+      setIsLoading(true)
+
       // group vem por param da interface e o team vem do state
       const playersByTeam = await getPlayerByGroupAndTeam(group, team)
 
       setPlayers(playersByTeam)
+
+      // Desativando o loading após o carregamento
+      setIsLoading(false)
 
     } catch (error) {
       console.log(error)
@@ -172,26 +180,29 @@ export function Players() {
       </HeaderList>
 
 
-      <FlatList
-        data={players}
-        keyExtractor={item => item.name}
-        renderItem={({ item }) => (
-          <PlayerCard
-            iconName='person'
-            playerName={item.name}
-            onRemove={() => handleRemovePlayer(item.name)}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => <ListEmpty message='Não há pessoas neste time.' />}
-        contentContainerStyle={
-          [
-            { paddingBottom: 60 },
-            players.length === 0 && { flex: 1 } // faz o component de listEmpty ocupar todo o espaço disponível qnd o total de jogadores em um time for vazio (igual a 0)
-          ]
-        }
-      />
-
+      {isLoading ?
+        <Loading></Loading>
+        :
+        <FlatList
+          data={players}
+          keyExtractor={item => item.name}
+          renderItem={({ item }) => (
+            <PlayerCard
+              iconName='person'
+              playerName={item.name}
+              onRemove={() => handleRemovePlayer(item.name)}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => <ListEmpty message='Não há pessoas neste time.' />}
+          contentContainerStyle={
+            [
+              { paddingBottom: 60 },
+              players.length === 0 && { flex: 1 } // faz o component de listEmpty ocupar todo o espaço disponível qnd o total de jogadores em um time for vazio (igual a 0)
+            ]
+          }
+        />
+      }
 
       <Button
         title='Remover Turma'
